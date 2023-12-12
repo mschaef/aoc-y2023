@@ -5,12 +5,14 @@ module Lib
 import Data.Char (isDigit, ord)
 import Data.List (tails)
 
-digitValAt :: String -> Int
-digitValAt (ch :_) = if isDigit ch then (ord ch) - (ord '0') else -1
-digitValAt _ = -1
+import Data.Maybe (catMaybes)
+
+digitValAt :: String -> Maybe Int
+digitValAt (ch :_) = if isDigit ch then Just ((ord ch) - (ord '0')) else Nothing
+digitValAt _ = Nothing
 
 digits :: String ->  [ Int ]
-digits s = filter (\c -> c >= 0) $ map digitValAt (tails s)
+digits s = catMaybes $ map digitValAt (tails s)
 
 lineValue :: String -> Int
 lineValue line = do
