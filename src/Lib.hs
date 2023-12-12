@@ -2,14 +2,24 @@ module Lib
     ( day1
     ) where
 
-import Data.Char (isDigit, ord)
-import Data.List (tails)
-
+import Data.List (find, isPrefixOf, tails)
 import Data.Maybe (catMaybes)
 
+digitStrings :: [(String, Int)]
+digitStrings = [
+  ("0", 0),
+  ("1", 1),
+  ("2", 2),
+  ("3", 3),
+  ("4", 4),
+  ("5", 5),
+  ("6", 6),
+  ("7", 7),
+  ("8", 8),
+  ("9", 9)]
+
 digitValAt :: String -> Maybe Int
-digitValAt (ch :_) = if isDigit ch then Just ((ord ch) - (ord '0')) else Nothing
-digitValAt _ = Nothing
+digitValAt atStr = fmap snd $ find (\( s, _ ) -> isPrefixOf s atStr) digitStrings
 
 digits :: String ->  [ Int ]
 digits s = catMaybes $ map digitValAt (tails s)
