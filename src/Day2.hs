@@ -49,7 +49,8 @@ marbleParser = do
   return (case color of
     "red" -> MarbleCount c 0 0
     "green"-> MarbleCount 0 c 0
-    "blue" -> MarbleCount 0 0 c)
+    "blue" -> MarbleCount 0 0 c
+    _ -> MarbleCount 0 0 0)
 
 marbleDrawParser :: Parsec String st MarbleCount
 marbleDrawParser = do
