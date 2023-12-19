@@ -1,5 +1,5 @@
 module Day1
-    ( day1
+    ( day1A, day1B
     ) where
 
 import Data.List (find, isPrefixOf, tails)
@@ -7,8 +7,23 @@ import Data.Maybe (catMaybes)
 
 import Lib
 
-digitStrings :: [(String, Int)]
-digitStrings = [
+type DigitStringList = [(String, Int)]
+
+digitStringsA :: DigitStringList
+digitStringsA = [
+  ("0", 0),
+  ("1", 1),
+  ("2", 2),
+  ("3", 3),
+  ("4", 4),
+  ("5", 5),
+  ("6", 6),
+  ("7", 7),
+  ("8", 8),
+  ("9", 9)]
+
+digitStringsB :: DigitStringList
+digitStringsB = [
   ("0", 0), ("zero" , 0),
   ("1", 1), ("one"  , 1),
   ("2", 2), ("two"  , 2),
@@ -20,20 +35,27 @@ digitStrings = [
   ("8", 8), ("eight", 8),
   ("9", 9), ("nine" , 9)]
 
-digitValAt :: String -> Maybe Int
-digitValAt atStr = fmap snd $ find (\( s, _ ) -> isPrefixOf s atStr) digitStrings
+digitValAt :: DigitStringList -> String -> Maybe Int
+digitValAt digitStrings atStr = fmap snd $ find (\( s, _ ) -> isPrefixOf s atStr) digitStrings
 
-digits :: String ->  [ Int ]
-digits s = catMaybes $ map digitValAt (tails s)
+digits :: DigitStringList -> String ->  [ Int ]
+digits digitStrings s = catMaybes $ map (digitValAt digitStrings) (tails s)
 
-lineValue :: String -> Int
-lineValue line = do
-  let lineDigits = digits line
+lineValue :: DigitStringList -> String -> Int
+lineValue digitStrings line = do
+  let lineDigits = digits digitStrings line
   (head lineDigits) * 10 + (last lineDigits)
 
-day1 :: IO ()
-day1 = do
+day1 :: DigitStringList -> String -> IO ()
+day1 digitStrings label = do
   fl <- fileLines "input-day-1.txt"
-  let total = sum (map lineValue fl)
+  let total = sum (map (lineValue digitStrings) fl)
 
-  putStrLn $ "Day 1 sum = " <> show total
+  putStrLn $ "Day " <> label <> "sum = " <> show total
+
+
+day1A :: IO ()
+day1A = day1 digitStringsA "1A"
+
+day1B :: IO ()
+day1B = day1 digitStringsB "1B"

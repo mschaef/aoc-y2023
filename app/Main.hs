@@ -5,8 +5,12 @@ import Day2
 
 main :: IO ()
 main = do
-  day1
+
+  day1A
+  day1B
+
   day2
+
 
   putStrLn "end run."
 
