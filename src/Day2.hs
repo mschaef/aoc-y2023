@@ -1,5 +1,5 @@
 module Day2
-    ( day2
+    ( day2A, day2B
     ) where
 
 import Lib
@@ -11,7 +11,7 @@ import Control.Monad (void)
 
 data MarbleCount = MarbleCount Int Int Int deriving (Show)
 
-data MarbleGame = MarbleGame Int [ [ MarbleCount ] ] deriving (Show)
+data MarbleGame = MarbleGame Int [ MarbleCount ] deriving (Show)
 
 canBeDrawn :: MarbleCount -> MarbleCount -> Bool
 canBeDrawn (MarbleCount dr dg db) (MarbleCount br bg bb) =
@@ -20,6 +20,16 @@ canBeDrawn (MarbleCount dr dg db) (MarbleCount br bg bb) =
 addCount :: MarbleCount -> MarbleCount -> MarbleCount
 addCount (MarbleCount xr xg xb) (MarbleCount yr yg yb) =
    MarbleCount (xr + yr) (xg + yg) (xb + yb)
+
+maxCount :: MarbleCount -> MarbleCount -> MarbleCount
+maxCount (MarbleCount xr xg xb) (MarbleCount yr yg yb) =
+   MarbleCount (max xr yr) (max xg yg) (max xb yb)
+
+sumCounts :: [ MarbleCount ] -> MarbleCount
+sumCounts draw = foldl addCount (MarbleCount 0 0 0) draw
+
+minMarblesNeeded :: [ MarbleCount ] -> MarbleCount
+minMarblesNeeded draw = foldl maxCount (MarbleCount 0 0 0) draw
 
 numberParser:: Parsec String st Int
 numberParser = read <$> (many1 $ oneOf "0123456789")
@@ -41,8 +51,10 @@ marbleParser = do
     "green"-> MarbleCount 0 c 0
     "blue" -> MarbleCount 0 0 c)
 
-marbleDrawParser :: Parsec String st [ MarbleCount ]
-marbleDrawParser = sepBy marbleParser (char ',')
+marbleDrawParser :: Parsec String st MarbleCount
+marbleDrawParser = do
+  draws <- sepBy marbleParser (char ',')
+  return $ sumCounts draws
 
 lineParser :: Parsec String st MarbleGame
 lineParser = do
@@ -50,22 +62,41 @@ lineParser = do
   draws <- sepBy marbleDrawParser (char ';')
   return (MarbleGame gameId draws)
 
-drawTotalMarbles :: [ MarbleCount ] -> MarbleCount
-drawTotalMarbles draw = foldl addCount (MarbleCount 0 0 0) draw
-
 gameCanBePlayed :: MarbleGame -> Bool
 gameCanBePlayed (MarbleGame _ draws) =
-  null (filter (not . (\t -> canBeDrawn t (MarbleCount 12 13 14))) (map drawTotalMarbles draws))
+  null (filter (not . (\t -> canBeDrawn t (MarbleCount 12 13 14))) draws)
 
-lineValue :: String -> Either ParseError MarbleGame
-lineValue line = parse lineParser "" line
+parseGameLine :: String -> Either ParseError MarbleGame
+parseGameLine line = parse lineParser "" line
 
-sumIds games = sum (map (\ (MarbleGame id _) ->  id) games)
+sumGameIds :: [ MarbleGame ] -> Int
+sumGameIds games = sum (map (\ (MarbleGame gameId _) ->  gameId) games)
 
-day2 :: IO ()
-day2 = do
+loadGames :: IO [ MarbleGame ]
+loadGames = do
   fl <- fileLines "input-day-2.txt"
 
-  let total = sumIds (filter gameCanBePlayed (rights (map lineValue fl)))
+  return $ rights (map parseGameLine fl)
 
-  putStrLn $ "Day 2 sum = " <> show total
+gamePower :: MarbleGame -> Int
+gamePower (MarbleGame _ draws) = do
+  let (MarbleCount r g b) = minMarblesNeeded draws
+  r * g * b
+
+day2A :: IO ()
+day2A = do
+  games <- loadGames
+
+  let total = sumGameIds (filter gameCanBePlayed games)
+
+  putStrLn $ "Day 2A sum = " <> show total
+
+day2B :: IO ()
+day2B = do
+
+  games <- loadGames
+
+  let total = sum (map gamePower games)
+
+  putStrLn $ "Day 2B sum = " <> show total
+

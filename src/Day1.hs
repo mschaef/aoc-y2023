@@ -51,7 +51,7 @@ day1 digitStrings label = do
   fl <- fileLines "input-day-1.txt"
   let total = sum (map (lineValue digitStrings) fl)
 
-  putStrLn $ "Day " <> label <> "sum = " <> show total
+  putStrLn $ "Day " <> label <> " sum = " <> show total
 
 
 day1A :: IO ()

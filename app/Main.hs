@@ -9,8 +9,8 @@ main = do
   day1A
   day1B
 
-  day2
-
+  day2A
+  day2B
 
   putStrLn "end run."
 
