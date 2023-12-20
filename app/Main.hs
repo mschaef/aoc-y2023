@@ -7,10 +7,12 @@ import Runner (
 
 import Day1
 import Day2
+import Day3
 
 main :: IO ()
 main = do
   runTests [DayTest "Day 1A" day1A 55208,
             DayTest "Day 1B" day1B 54578,
             DayTest "Day 2A" day2A 2406,
-            DayTest "Day 2B" day2B 78375]
+            DayTest "Day 2B" day2B 78375,
+            DayTest "Day 3A" day3A (-1)]
