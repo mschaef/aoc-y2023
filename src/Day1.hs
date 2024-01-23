@@ -46,16 +46,13 @@ lineValue digitStrings line = do
   let lineDigits = digits digitStrings line
   (head lineDigits) * 10 + (last lineDigits)
 
-day1 :: DigitStringList -> String -> IO ()
-day1 digitStrings label = do
+day1 :: DigitStringList -> IO Int
+day1 digitStrings = do
   fl <- fileLines "input-day-1.txt"
-  let total = sum (map (lineValue digitStrings) fl)
+  return $ sum (map (lineValue digitStrings) fl)
 
-  putStrLn $ "Day " <> label <> " sum = " <> show total
+day1A :: IO Int
+day1A = day1 digitStringsA
 
-
-day1A :: IO ()
-day1A = day1 digitStringsA "1A"
-
-day1B :: IO ()
-day1B = day1 digitStringsB "1B"
+day1B :: IO Int
+day1B = day1 digitStringsB

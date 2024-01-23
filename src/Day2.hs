@@ -77,20 +77,15 @@ gamePower (MarbleGame _ draws) = do
   let (MarbleCount r g b) = minMarblesNeeded draws
   r * g * b
 
-day2A :: IO ()
+day2A :: IO Int
 day2A = do
   games <- loadGames
 
-  let total = sumGameIds (filter gameCanBePlayed games)
+  return $ sumGameIds (filter gameCanBePlayed games)
 
-  putStrLn $ "Day 2A sum = " <> show total
-
-day2B :: IO ()
+day2B :: IO Int
 day2B = do
-
   games <- loadGames
 
-  let total = sum (map gamePower games)
-
-  putStrLn $ "Day 2B sum = " <> show total
+  return $ sum (map gamePower games)
 
