@@ -3,10 +3,17 @@ module Main (main) where
 import Day1
 import Day2
 
+resultDescription :: Int -> Int -> String
+resultDescription a e =
+  if a == e
+     then "PASS - received expected value: " <> show a
+  else "FAIL - actual " <> show a <> " different from expected " <> show e
+
+
 runTest :: String -> IO Int -> Int -> IO ()
 runTest name fn expected = do
   result <- fn
-  putStrLn $ name <> " result = " <> show result <> " " <> show expected
+  putStrLn $ name <> " " <> resultDescription result expected
 
 main :: IO ()
 main = do
