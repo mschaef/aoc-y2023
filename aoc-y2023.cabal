@@ -43,6 +43,7 @@ library
 executable aoc-y2023-exe
   main-is: Main.hs
   other-modules:
+      Runner
       Paths_aoc_y2023
   autogen-modules:
       Paths_aoc_y2023
