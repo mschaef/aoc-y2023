@@ -14,16 +14,13 @@ data MarbleCount = MarbleCount Int Int Int deriving (Show)
 data MarbleGame = MarbleGame Int [ MarbleCount ] deriving (Show)
 
 canBeDrawn :: MarbleCount -> MarbleCount -> Bool
-canBeDrawn (MarbleCount dr dg db) (MarbleCount br bg bb) =
-   dr <= br && dg <= bg && db <= bb
+canBeDrawn (MarbleCount dr dg db) (MarbleCount br bg bb) = dr <= br && dg <= bg && db <= bb
 
 addCount :: MarbleCount -> MarbleCount -> MarbleCount
-addCount (MarbleCount xr xg xb) (MarbleCount yr yg yb) =
-   MarbleCount (xr + yr) (xg + yg) (xb + yb)
+addCount (MarbleCount xr xg xb) (MarbleCount yr yg yb) = MarbleCount (xr + yr) (xg + yg) (xb + yb)
 
 maxCount :: MarbleCount -> MarbleCount -> MarbleCount
-maxCount (MarbleCount xr xg xb) (MarbleCount yr yg yb) =
-   MarbleCount (max xr yr) (max xg yg) (max xb yb)
+maxCount (MarbleCount xr xg xb) (MarbleCount yr yg yb) = MarbleCount (max xr yr) (max xg yg) (max xb yb)
 
 sumCounts :: [ MarbleCount ] -> MarbleCount
 sumCounts draw = foldl addCount (MarbleCount 0 0 0) draw
