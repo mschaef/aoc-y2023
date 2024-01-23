@@ -5,8 +5,6 @@ module Day1
 import Data.List (find, isPrefixOf, tails)
 import Data.Maybe (catMaybes)
 
-import Lib
-
 type DigitStringList = [(String, Int)]
 
 digitStringsA :: DigitStringList
@@ -46,13 +44,11 @@ lineValue digitStrings line = do
   let lineDigits = digits digitStrings line
   (head lineDigits) * 10 + (last lineDigits)
 
-day1 :: DigitStringList -> IO Int
-day1 digitStrings = do
-  fl <- fileLines "input-day-1.txt"
-  return $ sum (map (lineValue digitStrings) fl)
+day1 :: DigitStringList -> [ String ] -> Int
+day1 digitStrings inputLines = sum (map (lineValue digitStrings) inputLines)
 
-day1A :: IO Int
-day1A = day1 digitStringsA
+day1A :: [ String ] -> Int
+day1A inputLines = day1 digitStringsA inputLines
 
-day1B :: IO Int
-day1B = day1 digitStringsB
+day1B :: [ String ] -> Int
+day1B inputLines = day1 digitStringsB inputLines

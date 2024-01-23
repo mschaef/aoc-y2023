@@ -2,8 +2,6 @@ module Day3
     ( day3A
     ) where
 
-import Lib
-import Data.Maybe (catMaybes)
 import Data.Char (isDigit)
 import Data.List (tails)
 
@@ -17,18 +15,12 @@ windows' :: Int -> [a] -> [[a]]
 windows' n = map (take n) . tails
 
 lineFlagMasks :: [ String ] -> [ [ Bool ] ]
-lineFlagMasks lines =
-  let masks = map lineFlagMask lines
+lineFlagMasks inputLines =
+  let masks = map lineFlagMask inputLines
       bookend = map (\_ -> False) (head masks)
   in [ bookend ] ++ masks ++ [ bookend ]
 
-day3A :: IO Int
-day3A = do
-  fl <- fileLines "input-day-3-small.txt"
-
-  let indexed = take (length fl) $ windows' 3 (lineFlagMasks fl)
-
-  mapM_ print indexed
-
-  putStrLn $ "Day 3A" <> show indexed
-  return 0
+day3A :: [ String ] ->  Int
+day3A inputLines =
+  let indexed = take (length inputLines) $ windows' 3 (lineFlagMasks inputLines) in
+    length indexed

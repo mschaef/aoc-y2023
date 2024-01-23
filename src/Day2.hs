@@ -2,7 +2,6 @@ module Day2
     ( day2A, day2B
     ) where
 
-import Lib
 import Text.Parsec
 
 import Data.Either (rights)
@@ -66,26 +65,17 @@ parseGameLine line = parse lineParser "" line
 sumGameIds :: [ MarbleGame ] -> Int
 sumGameIds games = sum (map (\ (MarbleGame gameId _) ->  gameId) games)
 
-loadGames :: IO [ MarbleGame ]
-loadGames = do
-  fl <- fileLines "input-day-2.txt"
-
-  return $ rights (map parseGameLine fl)
+loadGames :: [ String ] -> [ MarbleGame ]
+loadGames fl = rights (map parseGameLine fl)
 
 gamePower :: MarbleGame -> Int
 gamePower (MarbleGame _ draws) = do
   let (MarbleCount r g b) = minMarblesNeeded draws
   r * g * b
 
-day2A :: IO Int
-day2A = do
-  games <- loadGames
+day2A :: [ String ] -> Int
+day2A fl = sumGameIds (filter gameCanBePlayed (loadGames fl))
 
-  return $ sumGameIds (filter gameCanBePlayed games)
-
-day2B :: IO Int
-day2B = do
-  games <- loadGames
-
-  return $ sum (map gamePower games)
+day2B :: [ String ] -> Int
+day2B fl = sum (map gamePower (loadGames fl))
 
