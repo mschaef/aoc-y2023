@@ -31,37 +31,33 @@ sumCounts draw = foldl addCount (MarbleCount 0 0 0) draw
 minMarblesNeeded :: [ MarbleCount ] -> MarbleCount
 minMarblesNeeded draw = foldl maxCount (MarbleCount 0 0 0) draw
 
-numberParser:: Parsec String st Int
-numberParser = read <$> (many1 $ oneOf "0123456789")
-
-whitespace :: Parsec String st ()
-whitespace = void $ many $ oneOf " \n\t"
-
-lineHeaderParser :: Parsec String st Int
-lineHeaderParser = (string "Game") *> whitespace *> numberParser <* (char ':')
-
-marbleParser :: Parsec String st MarbleCount
-marbleParser = do
-  whitespace
-  c <- numberParser
-  whitespace
-  color <- (string "red" <|> string "green" <|> string "blue")
-  return (case color of
-    "red" -> MarbleCount c 0 0
-    "green"-> MarbleCount 0 c 0
-    "blue" -> MarbleCount 0 0 c
-    _ -> MarbleCount 0 0 0)
-
-marbleDrawParser :: Parsec String st MarbleCount
-marbleDrawParser = do
-  draws <- sepBy marbleParser (char ',')
-  return $ sumCounts draws
+--- Parser
 
 lineParser :: Parsec String st MarbleGame
-lineParser = do
-  gameId <- lineHeaderParser
-  draws <- sepBy marbleDrawParser (char ';')
-  return (MarbleGame gameId draws)
+lineParser = line
+  where
+    line = do
+      gameId <- lineHeaderParser
+      draws <- sepBy marbleDrawParser (char ';')
+      return (MarbleGame gameId draws)
+
+    lineHeaderParser = (string "Game") *> whitespace *> numberParser <* (char ':')
+
+    marbleDrawParser = sumCounts <$> sepBy marbleParser (char ',')
+
+    marbleParser = do
+      whitespace
+      c <- numberParser
+      whitespace
+      ((\_ -> MarbleCount c 0 0) <$> string "red")
+        <|> ((\_ -> MarbleCount 0 c 0) <$> string "green")
+        <|> ((\_ -> MarbleCount 0 0 c) <$> string "blue")
+
+    numberParser = read <$> (many1 $ oneOf "0123456789")
+
+    whitespace = void $ many $ oneOf " \n\t"
+
+-- Game Tools
 
 gameCanBePlayed :: MarbleGame -> Bool
 gameCanBePlayed (MarbleGame _ draws) =
